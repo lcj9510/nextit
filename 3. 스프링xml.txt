@@ -1,0 +1,9 @@
+DispatchereServlet(mvc-servlet.xml)
+기본(annotation-drive, viewResolver) 웬만하면 안건들기
+정적자원매핑 설정
+** @Controller 스캔해서 빈으로 가지고 있자. **
+-----------------------------------------------------------
+ContextLoaderListener(context-*.xml)
+@Service, @Mapper, 기타 등등 빈 가지고 있기
+ + 그 외 필요한 기능을 제공하는 객체 빈으로 가지고 있기
+(Buisness, Persistence 영역의 객체 빈으로 가지고 있기)

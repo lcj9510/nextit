@@ -1,0 +1,17 @@
+ajax (email) - interceptor
+
+ajax 호출하면 @RequestMapping에 있는 메소드가 실행됩니다.
+
+-------------------------------------------------------------
+
+interceptor
+설정 mvc-servlet.xml에다가 설정
+
+mypage로 요청할때는 무조건 login이 되어있어야합니다.
+login이 안되있는데 mypage로 요청하면 login페이지로 이동
+login이 되어있으면 정상적으로 mypage 보여주기
+
+member로 요청할때는 무조건 매니저만 갈수있어야합니다.
+로그인이 안되있으면 로그인으로
+로그인이 되어있는데 MANAGER가 아니면 에러
+login했을때 MANAGER인지 아닌지는 UserVO의 userRole이 "MANAGER", "MEMEBER"인지 판단하면 됩니다.

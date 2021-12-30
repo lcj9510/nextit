@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.member.dao.IMemberDao">
+
+<sql id="search">
+<if test="!@org.apache.commons.lang3.StringUtils@isBlank(searchWord)">
+<choose>
+<when test='searchType == "NM"'> AND mem_name like '%'||#{searchWord}||'%'</when>
+<when test='searchType == "ID"'> AND mem_id like '%'||#{searchWord}||'%'</when>
+<when test='searchType == "HP"'> AND mem_hp like '%'||#{searchWord}||'%'</when>
+</choose>
+</if>
+<if test="!@org.apache.commons.lang3.StringUtils@isBlank(searchJob)">
+And mem_job = #{searchJob}
+</if>
+<if test="!@org.apache.commons.lang3.StringUtils@isBlank(searchHobby)">
+And mem_hobby = #{searchHobby}
+</if>
+</sql>
+
+<select id="getTotalRowCount" resultType="int" parameterType="com.study.member.vo.MemberSearchVO">
+select count(*)
+from member 
+where 1=1   
+<include refid="search"/>
+</select>
+
+<select id="getMemberList" resultType="com.study.member.vo.MemberVO" parameterType="com.study.member.vo.MemberSearchVO">
+<include refid="common.prePage"></include>                                       
+SELECT                                                                                
+       to_char(mem_bir,'YYYY-MM-DD') AS mem_bir              ,                   
+       mem_id     ,     mem_pass     ,       mem_name      ,                         
+                        mem_zip      ,       mem_add1       ,                           
+       mem_add2   ,     mem_hp       ,       mem_mail        ,                      
+       mem_job    ,     mem_hobby    ,       mem_mileage      ,                     
+       mem_del_yn                                              ,                       
+       (select b.comm_nm from comm_code b where a.mem_job = b.comm_cd) as mem_job_nm     ,     
+       (select b.comm_nm from comm_code b where a.mem_hobby = b.comm_cd) as mem_hobby_nm      
+FROM member a  WHERE 1=1                                                          
+<include refid="search"></include>
+<include refid="common.postPage"></include>
+</select>
+
+<select id="getMember" resultType="com.study.member.vo.MemberVO" parameterType="String">
+SELECT                                                                                      
+       to_char(mem_bir,'YYYY-MM-DD') AS mem_bir               ,                              
+       mem_id     ,     mem_pass     ,       mem_name        ,                               
+                        mem_zip      ,       mem_add1        ,                               
+       mem_add2   ,     mem_hp       ,       mem_mail        ,                               
+       mem_job    ,     mem_hobby    ,       mem_mileage     ,                               
+       mem_del_yn                                            ,                             
+       (select b.comm_nm from comm_code b where a.mem_job = b.comm_cd) as mem_job_nm   ,         
+       (select b.comm_nm from comm_code b where a.mem_hobby = b.comm_cd) as mem_hobby_nm        
+FROM member a                                                                               
+WHERE mem_id=#{memId}                                                                             
+</select>
+
+<update id="updateMember" parameterType="com.study.member.vo.MemberVO">
+UPDATE member SET  
+mem_name=#{memName}
+,mem_bir=#{memBir}         
+,mem_zip=#{memZip}         
+,mem_add1=#{memAdd1}        
+,mem_add2=#{memAdd2}        
+,mem_hp=#{memHp}          
+,mem_mail=#{memMail}        
+,mem_job=#{memJob}         
+,mem_hobby=#{memHobby}       
+WHERE mem_id=#{memId}     
+</update>
+
+<update id="deleteMember" parameterType="com.study.member.vo.MemberVO">
+UPDATE member SET   
+mem_del_yn='Y'      
+WHERE mem_id=#{memId}      
+</update>
+
+<insert id="insertMember" parameterType="com.study.member.vo.MemberVO">
+INSERT INTO member(
+    mem_id, mem_pass, mem_name
+    , mem_bir, mem_zip, mem_add1
+    , mem_add2, mem_hp, mem_mail
+    , mem_job, mem_hobby, mem_mileage
+    , mem_del_yn
+) VALUES(            
+ #{memId},     #{memPass},    #{memName},                      
+ #{memBir},     #{memZip},    #{memAdd1},                      
+ #{memAdd2},     #{memHp},    #{memMail},                      
+ #{memJob},     #{memHobby},    0,                      
+ 'N'                                  
+  )                                   
+</insert>
+
+</mapper>
